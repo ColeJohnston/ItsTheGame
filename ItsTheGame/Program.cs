@@ -188,7 +188,6 @@ namespace players
                                 alive = false;
                             }
                         }
-
                         break;
                 }
             }
