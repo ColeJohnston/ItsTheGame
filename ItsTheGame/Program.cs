@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Net.Security;
 using System.Numerics;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -9,21 +10,27 @@ namespace players
     struct players
     {
         public string name;
-        public int score;
+        public double score;
         public double time;
 
-        public players(string name, int score, double time)
+        public void setName(string name)
         {
             this.name = name;
-            this.score = score;
+        }
+        public void setTime(double time)
+        {
             this.time = time;
+        }
+        public void setScore(double score)
+        {
+            this.score = score;
         }
 
         public string getName()
         {
             return this.name;
         }
-        public int getScore()
+        public double getScore()
         {
             return this.score;
         }
@@ -37,163 +44,206 @@ namespace players
     {
         static void Main(string[] args)
         {
-            int[] player = new int[2], treasure = new int[2], ghost1 = new int[2], ghost2 = new int[2];
-            string[,] position = new string[3, 3];
-            int level = 1, lives = 3 ;
-            bool alive = true;
-            Intro();
-            player = playerStartingLocation();
-            treasure = treasureStartingLocation(player);
-            position = initializeMap(player, treasure);
-            while (alive)
+            bool PA = true;
+            int id = 0;
+            while (PA)
             {
-                switch (level)
+                int[] player = new int[2], treasure = new int[2], ghost1 = new int[2], ghost2 = new int[2];
+                string[,] position = new string[3, 3];
+                int level = 1, lives = 3;
+                bool alive = true;
+                players[] players = new players[10000];
+                Intro();
+                Stopwatch stopwatch = new Stopwatch();
+                stopwatch.Start();
+                player = playerStartingLocation();
+                treasure = treasureStartingLocation(player);
+                position = initializeMap(player, treasure);
+                while (alive)
                 {
-                    case 1:
-                        map134(position);
-                        position[player[0], player[1]] = "X";
-                        position[treasure[0], treasure[1]] = "*";
-                        player = playerUpdate134(player, keyPress(), position);
-                        Console.Clear();
-                        if (player[0] == treasure[0] && player[1] == treasure[1])
-                        {
-                            position = mapReset(position, player, treasure, ghost1, ghost2);
-                            Console.Write("WOOOOOOOOOOOOOO");
-                            level++;
-                            Console.ReadLine();
-                            player = playerStartingLocation();
-                            treasure = treasureStartingLocation(player);
-                        }
-
-                        break;
-                    case 2:
-                        Console.WriteLine(player[0] + ", " + player[1]);
-                        position[player[0], player[1]] = "X";
-                        position[treasure[0], treasure[1]] = "*";
-                        map2(position);
-                        player = playerUpdate2(player, keyPress(), position, treasure);
-                        Console.Clear();
-                        if (player[0] == treasure[0] && player[1] == treasure[1])
-                        {
-                            position = mapReset(position, player, treasure, ghost1, ghost2);
-                            Console.Write("WOOOOOOOOOOOOOO");
-                            level++;
-                            Console.ReadLine();
-                            player = playerStartingLocation();
-                            treasure = treasureStartingLocation(player);
-                            ghost1 = ghost1StartingLocation(player, treasure);
-                        }
-
-                        break;
-                    case 3:
-                        Console.WriteLine(player[0] + ", " + player[1]);
-                        position[player[0], player[1]] = "X";
-                        position[treasure[0], treasure[1]] = "*";
-                        position[ghost1[0], ghost1[1]] = "!";
-                        map134(position);
-                        player = playerUpdate134(player, keyPress(), position);
-                        ghost1 = ghostUpdate(ghost1, position);
-                        Console.Clear();
-                        if (player[0] == treasure[0] && player[1] == treasure[1])
-                        {
-                            position = mapReset(position, player, treasure, ghost1, ghost2);
-                            Console.Write("WOOOOOOOOOOOOOO");
-                            level++;
-                            Console.ReadLine();
-                            player = playerStartingLocation();
-                            treasure = treasureStartingLocation(player);
-                            ghost1 = ghost1StartingLocation(player, treasure);
-                            ghost2 = ghost2StartingLocation(player, treasure, ghost1);
-                        }
-                        else if (player[0] == ghost1[0] && player[1] == ghost1[1])
-                        {
-                            lives--;
-                            position = mapReset(position, player, treasure, ghost1, ghost2);
-                            player = playerStartingLocation();
-                            treasure = treasureStartingLocation(player);
-                            ghost1 = ghost1StartingLocation(player, treasure);
-                            Console.WriteLine("LIVES: " + lives);
-                            if (lives == 0)
+                    switch (level)
+                    {
+                        case 1:
+                            map134(position);
+                            position[player[0], player[1]] = "X";
+                            position[treasure[0], treasure[1]] = "*";
+                            player = playerUpdate134(player, keyPress(), position);
+                            Console.Clear();
+                            if (player[0] == treasure[0] && player[1] == treasure[1])
                             {
-                                alive = false;
+                                position = mapReset(position, player, treasure, ghost1, ghost2);
+                                Console.Write("WOOOOOOOOOOOOOO");
+                                level++;
+                                Console.ReadLine();
+                                player = playerStartingLocation();
+                                treasure = treasureStartingLocation(player);
                             }
-                        }
-                        break;
-                    case 4:
-                        Console.WriteLine(player[0] + ", " + player[1]);
-                        position[player[0], player[1]] = "X";
-                        position[treasure[0], treasure[1]] = "*";
-                        position[ghost1[0], ghost1[1]] = "!";
-                        position[ghost2[0], ghost2[1]] = "!";
-                        map134(position);
-                        player = playerUpdate134(player, keyPress(), position);
-                        ghost1 = ghostUpdate(ghost1, position);
-                        ghost2 = ghostUpdate(ghost2, position);
-                        Console.Clear();
 
-                        if (player[0] == treasure[0] && player[1] == treasure[1])
-                        {
+                            break;
+                        case 2:
+                            Console.WriteLine(player[0] + ", " + player[1]);
+                            position[player[0], player[1]] = "X";
+                            position[treasure[0], treasure[1]] = "*";
+                            map2(position);
+                            player = playerUpdate2(player, keyPress(), position, treasure);
+                            Console.Clear();
+                            if (player[0] == treasure[0] && player[1] == treasure[1])
+                            {
+                                position = mapReset(position, player, treasure, ghost1, ghost2);
+                                Console.Write("WOOOOOOOOOOOOOO");
+                                level++;
+                                Console.ReadLine();
+                                player = playerStartingLocation();
+                                treasure = treasureStartingLocation(player);
+                                ghost1 = ghost1StartingLocation(player, treasure);
+                            }
+
+                            break;
+                        case 3:
+                            Console.WriteLine(player[0] + ", " + player[1]);
+                            position[player[0], player[1]] = "X";
+                            position[treasure[0], treasure[1]] = "*";
+                            position[ghost1[0], ghost1[1]] = "!";
+                            map134(position);
+                            player = playerUpdate134(player, keyPress(), position);
+                            ghost1 = ghostUpdate(ghost1, position);
+                            Console.Clear();
+                            if (player[0] == treasure[0] && player[1] == treasure[1])
+                            {
+                                position = mapReset(position, player, treasure, ghost1, ghost2);
+                                Console.Write("WOOOOOOOOOOOOOO");
+                                level++;
+                                Console.ReadLine();
+                                player = playerStartingLocation();
+                                treasure = treasureStartingLocation(player);
+                                ghost1 = ghost1StartingLocation(player, treasure);
+                                ghost2 = ghost2StartingLocation(player, treasure, ghost1);
+                            }
+                            else if (player[0] == ghost1[0] && player[1] == ghost1[1])
+                            {
+                                lives--;
+                                position = mapReset(position, player, treasure, ghost1, ghost2);
+                                player = playerStartingLocation();
+                                treasure = treasureStartingLocation(player);
+                                ghost1 = ghost1StartingLocation(player, treasure);
+                                Console.WriteLine("LIVES: " + lives);
+                                if (lives == 0)
+                                {
+                                    PA = Lose();
+                                }
+                            }
+                            break;
+                        case 4:
+                            Console.WriteLine(player[0] + ", " + player[1]);
                             position[player[0], player[1]] = "X";
                             position[treasure[0], treasure[1]] = "*";
                             position[ghost1[0], ghost1[1]] = "!";
                             position[ghost2[0], ghost2[1]] = "!";
-                            Console.Write("WOOOOOOOOOOOOOO");
-                            level++;
-                            Console.ReadLine();
-                            player = playerStartingLocation();
-                            treasure = treasureStartingLocation(player);
-                            ghost1 = ghost1StartingLocation(player, treasure);
-                            ghost2 = ghost2StartingLocation(player, treasure, ghost1);
-                        }
+                            map134(position);
+                            player = playerUpdate134(player, keyPress(), position);
+                            ghost1 = ghostUpdate(ghost1, position);
+                            ghost2 = ghostUpdate(ghost2, position);
+                            Console.Clear();
 
-                        else if (player[0] == ghost1[0] && player[1] == ghost1[1] || player[0] == ghost2[0] && player[1] == ghost2[1])
-                        {
-                            lives--;
-                            position = mapReset(position, player, treasure, ghost1, ghost2);
-                            player = playerStartingLocation();
-                            treasure = treasureStartingLocation(player);
-                            ghost1 = ghost1StartingLocation(player, treasure);
-                            Console.WriteLine("LIVES: " + lives);
-                            if (lives == 0)
+                            if (player[0] == treasure[0] && player[1] == treasure[1])
                             {
-                                alive = false;
+                                position = mapReset(position, player, treasure, ghost1, ghost2);
+                                Console.Write("WOOOOOOOOOOOOOO");
+                                level++;
+                                Console.ReadLine();
+                                player = playerStartingLocation();
+                                treasure = treasureStartingLocation(player);
+                                ghost1 = ghost1StartingLocation(player, treasure);
+                                ghost2 = ghost2StartingLocation(player, treasure, ghost1);
                             }
-                        }
-                        break;
-                    case 5:
-                        Console.WriteLine(player[0] + ", " + player[1]);
-                        position[player[0], player[1]] = "X";
-                        position[ghost1[0], ghost1[1]] = "!";
-                        map5(position);
-                        player = playerUpdate5(player, keyPress(), position, treasure);
-                        ghost1 = ghostUpdate(ghost1, position);
-                        ghost2 = ghostUpdate(ghost2, position);
-                        Console.Clear();
-                        if (player[0] == treasure[0] && player[1] == treasure[1])
-                        {
-                            Console.WriteLine("YOU WON!!!");
-                            Console.WriteLine("Would you like to play again?");
-                            Console.WriteLine("Y/N");
-                        }
-                        else if (player[0] == ghost1[0] && player[1] == ghost1[1] || player[0] == ghost2[0] && player[1] == ghost2[1])
-                        {
-                            lives--;
-                            position = mapReset(position, player, treasure, ghost1, ghost2);
-                            player = playerStartingLocation();
-                            treasure = treasureStartingLocation(player);
-                            ghost1 = ghost1StartingLocation(player, treasure);
-                            Console.WriteLine("LIVES: " + lives);
-                            if (lives == 0)
+
+                            else if (player[0] == ghost1[0] && player[1] == ghost1[1] || player[0] == ghost2[0] && player[1] == ghost2[1])
                             {
-                                alive = false;
+                                lives--;
+                                position = mapReset(position, player, treasure, ghost1, ghost2);
+                                player = playerStartingLocation();
+                                treasure = treasureStartingLocation(player);
+                                ghost1 = ghost1StartingLocation(player, treasure);
+                                Console.WriteLine("LIVES: " + lives);
+                                if (lives == 0)
+                                {
+                                    PA = Lose();
+                                }
                             }
-                        }
-                        break;
+                            break;
+                        case 5:
+                            Console.WriteLine(player[0] + ", " + player[1]);
+                            position[player[0], player[1]] = "X";
+                            position[treasure[0], treasure[1]] = "*";
+                            position[ghost1[0], ghost1[1]] = "!";
+                            position[ghost2[0], ghost2[1]] = "!";
+
+                            map5(position);
+                            player = playerUpdate5(player, keyPress(), position, treasure);
+                            ghost1 = ghostUpdate(ghost1, position);
+                            ghost2 = ghostUpdate(ghost2, position);
+                            Console.Clear();
+                            if (player[0] == treasure[0] && player[1] == treasure[1])
+                            {
+                                stopwatch.Stop();
+                                players[id].score = WinMessage(stopwatch, lives);
+                                players[id].time = (double)(stopwatch.Elapsed.TotalMilliseconds / 1000);
+                                Console.WriteLine("What is your name for the leaderboard?");
+                                players[id].name = Console.ReadLine();
+                                PA = WinTA();
+                                alive = false;
+                                id++;
+                            }
+                            else if (player[0] == ghost1[0] && player[1] == ghost1[1] || player[0] == ghost2[0] && player[1] == ghost2[1])
+                            {
+                                lives--;
+                                position = mapReset(position, player, treasure, ghost1, ghost2);
+                                player = playerStartingLocation();
+                                treasure = treasureStartingLocation(player);
+                                ghost1 = ghost1StartingLocation(player, treasure);
+                                ghost2 = ghost2StartingLocation(player, treasure, ghost1);
+                                Console.WriteLine("LIVES: " + lives);
+                                if (lives == 0)
+                                {
+                                    PA = Lose();
+                                }
+                            }
+                            break;
+                    }
                 }
             }
-            Console.WriteLine("You lost");
 
 
+        }
+        static double WinMessage(Stopwatch sw, int lives)
+        {
+            double score = 7000;
+            Console.WriteLine("YOU WIN!!!");
+            Console.WriteLine("Congratulations");
+            score += (1000 * lives) - (double)(sw.Elapsed.TotalMilliseconds / 10);
+            Console.WriteLine("Your score was " + score);
+            return score;
+        }
+        static bool WinTA()
+        {
+            bool PA;
+            Console.WriteLine("Would you like to try again?");
+            PA = (Console.ReadLine().ToUpper() == "Y");
+            return PA;
+        }
+        static bool Lose()
+        {
+            Console.WriteLine("You Lose");
+            Console.WriteLine("Would you like to play again?");
+            Console.WriteLine("Y/N");
+            if (Console.ReadLine().ToUpper() == "Y")
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
         static void Intro()
         {
@@ -229,8 +279,6 @@ namespace players
             Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine("\nPress enter when you think you're ready");
             Console.ReadLine();
-            Stopwatch stopwatch = new Stopwatch();
-            stopwatch.Start();
         }
         static string[,] mapReset(string[,] position, int[] player, int[] treasure, int[] ghost1, int[] ghost2)
         {
@@ -264,13 +312,13 @@ namespace players
         }
         static int[] ghost2StartingLocation(int[] player, int[] treasure, int[] ghost1)
         {
-                int[] start = new int[2];
+            int[] start = new int[2];
             do
             {
                 start = randomizer();
             } while ((start[0] == player[0] && start[1] == player[1]) || (start[0] == treasure[0] && start[1] == treasure[1]) || (start[0] == ghost1[0] && start[1] == ghost1[1]));
             return start;
-         }
+        }
         static string[,] initializeMap(int[] player, int[] tStart)
         {
             string[,] position = new string[3, 3];
@@ -362,7 +410,7 @@ namespace players
             }
             static void PerformEnter()
             {
-                Console.Write("\r\n"); 
+                Console.Write("\r\n");
             }
             return movement;
         }
@@ -455,7 +503,7 @@ namespace players
         {
             position[player[0], player[1]] = "_";
             int[] newCoordinates = new int[2];
-            if (keyPress == "UP" && player[0] != 0 && !(player[0] == 2 && player[1] == 2) )
+            if (keyPress == "UP" && player[0] != 0 && !(player[0] == 2 && player[1] == 2))
             {
                 player[0]--;
             }
