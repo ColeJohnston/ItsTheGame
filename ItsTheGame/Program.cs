@@ -4,6 +4,7 @@ using System.Net.Security;
 using System.Numerics;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization.Formatters;
 
 namespace players
 {
@@ -44,16 +45,18 @@ namespace players
     {
         static void Main(string[] args)
         {
+            double[] scores = new double[0];
             bool PA = true;
             int id = 0;
+            players[] players = new players[0];
             while (PA)
             {
                 int[] player = new int[2], treasure = new int[2], ghost1 = new int[2], ghost2 = new int[2];
                 string[,] position = new string[3, 3];
                 int level = 1, lives = 3;
                 bool alive = true;
-                players[] players = new players[10000];
                 Intro();
+                Console.Clear();
                 Stopwatch stopwatch = new Stopwatch();
                 stopwatch.Start();
                 player = playerStartingLocation();
@@ -61,6 +64,11 @@ namespace players
                 position = initializeMap(player, treasure);
                 while (alive)
                 {
+                    Console.ForegroundColor = ConsoleColor.DarkYellow;
+                    Console.Write("LEVEL: " + level);
+                    Console.ForegroundColor = ConsoleColor.DarkGreen;
+                    Console.WriteLine("\t      LIVES: " + lives);
+                    Console.ForegroundColor = ConsoleColor.White;
                     switch (level)
                     {
                         case 1:
@@ -72,16 +80,19 @@ namespace players
                             if (player[0] == treasure[0] && player[1] == treasure[1])
                             {
                                 position = mapReset(position, player, treasure, ghost1, ghost2);
-                                Console.Write("WOOOOOOOOOOOOOO");
                                 level++;
+                                Console.WriteLine("You made it to level " + level);
+                                Console.ForegroundColor = ConsoleColor.DarkRed;
+                                Console.WriteLine("\n\nPRESS ENTER TO CONTINUE");
+                                Console.ForegroundColor = ConsoleColor.White;
                                 Console.ReadLine();
+                                Console.Clear();
                                 player = playerStartingLocation();
                                 treasure = treasureStartingLocation(player);
                             }
 
                             break;
                         case 2:
-                            Console.WriteLine(player[0] + ", " + player[1]);
                             position[player[0], player[1]] = "X";
                             position[treasure[0], treasure[1]] = "*";
                             map2(position);
@@ -90,9 +101,13 @@ namespace players
                             if (player[0] == treasure[0] && player[1] == treasure[1])
                             {
                                 position = mapReset(position, player, treasure, ghost1, ghost2);
-                                Console.Write("WOOOOOOOOOOOOOO");
                                 level++;
+                                Console.WriteLine("You made it to level " + level);
+                                Console.ForegroundColor = ConsoleColor.DarkRed;
+                                Console.WriteLine("\n\nPRESS ENTER TO CONTINUE");
+                                Console.ForegroundColor = ConsoleColor.White;
                                 Console.ReadLine();
+                                Console.Clear();
                                 player = playerStartingLocation();
                                 treasure = treasureStartingLocation(player);
                                 ghost1 = ghost1StartingLocation(player, treasure);
@@ -100,7 +115,6 @@ namespace players
 
                             break;
                         case 3:
-                            Console.WriteLine(player[0] + ", " + player[1]);
                             position[player[0], player[1]] = "X";
                             position[treasure[0], treasure[1]] = "*";
                             position[ghost1[0], ghost1[1]] = "!";
@@ -111,9 +125,13 @@ namespace players
                             if (player[0] == treasure[0] && player[1] == treasure[1])
                             {
                                 position = mapReset(position, player, treasure, ghost1, ghost2);
-                                Console.Write("WOOOOOOOOOOOOOO");
                                 level++;
+                                Console.WriteLine("You made it to level " + level);
+                                Console.ForegroundColor = ConsoleColor.DarkRed;
+                                Console.WriteLine("\n\nPRESS ENTER TO CONTINUE");
+                                Console.ForegroundColor = ConsoleColor.White;
                                 Console.ReadLine();
+                                Console.Clear();
                                 player = playerStartingLocation();
                                 treasure = treasureStartingLocation(player);
                                 ghost1 = ghost1StartingLocation(player, treasure);
@@ -126,15 +144,27 @@ namespace players
                                 player = playerStartingLocation();
                                 treasure = treasureStartingLocation(player);
                                 ghost1 = ghost1StartingLocation(player, treasure);
-                                Console.WriteLine("LIVES: " + lives);
-                                if (lives == 0)
+                                Console.Clear();
+                                if (lives > 0)
+                                {
+                                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                                    Console.WriteLine("You lost a life");
+                                    Console.ForegroundColor = ConsoleColor.White;
+                                    Console.WriteLine("REMAINING: " + lives);
+                                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                                    Console.WriteLine("\n\nPRESS ENTER TO CONTINUE");
+                                    Console.ForegroundColor = ConsoleColor.White;
+                                    Console.ReadLine();
+                                    Console.Clear();
+                                }
+                                else
                                 {
                                     PA = Lose();
+                                    alive = false;
                                 }
                             }
                             break;
                         case 4:
-                            Console.WriteLine(player[0] + ", " + player[1]);
                             position[player[0], player[1]] = "X";
                             position[treasure[0], treasure[1]] = "*";
                             position[ghost1[0], ghost1[1]] = "!";
@@ -148,9 +178,13 @@ namespace players
                             if (player[0] == treasure[0] && player[1] == treasure[1])
                             {
                                 position = mapReset(position, player, treasure, ghost1, ghost2);
-                                Console.Write("WOOOOOOOOOOOOOO");
                                 level++;
+                                Console.WriteLine("You made it to level " + level);
+                                Console.ForegroundColor = ConsoleColor.DarkRed;
+                                Console.WriteLine("\n\nPRESS ENTER TO CONTINUE");
+                                Console.ForegroundColor = ConsoleColor.White;
                                 Console.ReadLine();
+                                Console.Clear();
                                 player = playerStartingLocation();
                                 treasure = treasureStartingLocation(player);
                                 ghost1 = ghost1StartingLocation(player, treasure);
@@ -164,15 +198,27 @@ namespace players
                                 player = playerStartingLocation();
                                 treasure = treasureStartingLocation(player);
                                 ghost1 = ghost1StartingLocation(player, treasure);
-                                Console.WriteLine("LIVES: " + lives);
-                                if (lives == 0)
+                                Console.Clear();
+                                if (lives > 0)
+                                {
+                                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                                    Console.WriteLine("You lost a life");
+                                    Console.ForegroundColor = ConsoleColor.White;
+                                    Console.WriteLine("REMAINING: " + lives);
+                                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                                    Console.WriteLine("\n\nPRESS ENTER TO CONTINUE");
+                                    Console.ForegroundColor = ConsoleColor.White;
+                                    Console.ReadLine();
+                                    Console.Clear();
+                                }
+                                else
                                 {
                                     PA = Lose();
+                                    alive = false;
                                 }
                             }
                             break;
                         case 5:
-                            Console.WriteLine(player[0] + ", " + player[1]);
                             position[player[0], player[1]] = "X";
                             position[treasure[0], treasure[1]] = "*";
                             position[ghost1[0], ghost1[1]] = "!";
@@ -185,11 +231,21 @@ namespace players
                             Console.Clear();
                             if (player[0] == treasure[0] && player[1] == treasure[1])
                             {
+                                Array.Resize(ref players, id + 1);
+                                Array.Resize(ref scores, id + 1);
                                 stopwatch.Stop();
-                                players[id].score = WinMessage(stopwatch, lives);
-                                players[id].time = (double)(stopwatch.Elapsed.TotalMilliseconds / 1000);
+                                players[id].score = Math.Round(WinMessage(stopwatch, lives), 2);
+                                scores[id] = players[id].getScore();
+                                players[id].time = Math.Round((double)(stopwatch.Elapsed.TotalMilliseconds / 1000), 2);
                                 Console.WriteLine("What is your name for the leaderboard?");
                                 players[id].name = Console.ReadLine();
+                                Console.Clear();
+                                Leaderboard(scores, players, LeaderboardOrder(scores));
+                                Console.ForegroundColor = ConsoleColor.DarkRed;
+                                Console.WriteLine("\n\n\nPress ENTER to continue");
+                                Console.ForegroundColor = ConsoleColor.White;
+                                Console.ReadLine();
+                                Console.Clear();
                                 PA = WinTA();
                                 alive = false;
                                 id++;
@@ -202,25 +258,70 @@ namespace players
                                 treasure = treasureStartingLocation(player);
                                 ghost1 = ghost1StartingLocation(player, treasure);
                                 ghost2 = ghost2StartingLocation(player, treasure, ghost1);
-                                Console.WriteLine("LIVES: " + lives);
-                                if (lives == 0)
+                                Console.Clear();
+                                if (lives > 0)
+                                {
+                                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                                    Console.WriteLine("You lost a life");
+                                    Console.ForegroundColor = ConsoleColor.White;
+                                    Console.WriteLine("Remaining: " + lives);
+                                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                                    Console.WriteLine("\n\nPRESS ENTER TO CONTINUE");
+                                    Console.ForegroundColor = ConsoleColor.White;
+                                    Console.ReadLine();
+                                    Console.Clear();
+                                }
+                                else
                                 {
                                     PA = Lose();
+                                    alive = false;
                                 }
                             }
                             break;
                     }
                 }
+                Console.Clear();
             }
+            Leaderboard(scores, players, LeaderboardOrder(scores));
+            Console.WriteLine("\n\n\n\n\nThank you for playing!!!");
 
-
+        }
+        static int[] LeaderboardOrder(double[] scores)
+        {
+            double[] sortedScores = new double[scores.Length];
+            int[] order = new int[scores.Length];
+            scores.CopyTo(sortedScores, 0);
+            Array.Sort(sortedScores);
+            for (int i = sortedScores.Length - 1; i >= 0; i--)
+            {
+                order[(sortedScores.Length - (i + 1))] = Array.IndexOf(scores, sortedScores[i]);
+            }
+            return order;
+        }
+        static void Leaderboard(double[] scores, players[] player, int[] order)
+        {
+            Console.WriteLine("\tLEADERBOARD");
+            Console.WriteLine("--------------------------");
+            Console.WriteLine("\nPlayer \t Time \t Score");
+            Console.WriteLine("       (Seconds)");
+            Console.WriteLine("----------------------\n");
+            for (
+                int i = 0; i < scores.Length; i++)
+            {
+                if (i == 0)
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkYellow;
+                }
+                Console.WriteLine(player[order[i]].getName() + "     " + player[order[i]].getTime() + "    " + player[order[i]].getScore());
+                Console.ForegroundColor = ConsoleColor.White;
+            }
         }
         static double WinMessage(Stopwatch sw, int lives)
         {
             double score = 7000;
             Console.WriteLine("YOU WIN!!!");
             Console.WriteLine("Congratulations");
-            score += (1000 * lives) - (double)(sw.Elapsed.TotalMilliseconds / 10);
+            score += Math.Round((1000 * lives) - (double)(sw.Elapsed.TotalMilliseconds / 10), 2);
             Console.WriteLine("Your score was " + score);
             return score;
         }
@@ -228,6 +329,7 @@ namespace players
         {
             bool PA;
             Console.WriteLine("Would you like to try again?");
+            Console.WriteLine("Y/N");
             PA = (Console.ReadLine().ToUpper() == "Y");
             return PA;
         }
